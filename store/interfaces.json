@@ -1,25 +1,25 @@
 {
-  "disclosure-layout": {
+  "disclosure-ld-layout": {
     "component": "DisclosureLayout",
     "composition": "children"
   },
-  "disclosure-layout-group": {
+  "disclosure-ld-layout-group": {
     "component": "DisclosureLayoutGroup",
     "composition": "children"
   },
-  "disclosure-trigger": {
+  "disclosure-ld-trigger": {
     "component": "DisclosureTrigger",
     "composition": "children"
   },
-  "disclosure-trigger-group": {
+  "disclosure-ld-trigger-group": {
     "component": "DisclosureTriggerGroup",
     "composition": "children"
   },
-  "disclosure-state-indicator": {
+  "disclosure-ld-state-indicator": {
     "component": "DisclosureStateIndicator",
     "composition": "children"
   },
-  "disclosure-content": {
+  "disclosure-ld-content": {
     "component": "DisclosureContent",
     "composition": "children"
   }

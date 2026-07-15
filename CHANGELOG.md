@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `generateStructuredData` prop (opt-in, defaults to `false`) on `disclosure-ld-layout` and `disclosure-ld-layout-group`, generating [schema.org `FAQPage`](https://schema.org/FAQPage) JSON-LD structured data (`<script type="application/ld+json">`, injected via `Helmet` from `vtex.render-runtime`, resolved during SSR). When enabled on a `disclosure-ld-layout-group`, all `disclosure-ld-layout` descendants are aggregated into a single script, taking precedence over their individual `generateStructuredData` prop. Both props are exposed in the Site Editor via block `schema`.
+
+### Fixed
+
+- Strip Markdown (not only HTML) from rich-text when building FAQ JSON-LD, so markers like `**bold**`, `*italic*`, links, and list bullets no longer appear literally in schema.org `name` / `text`.
+
 ### Changed
 
 - Update GitHub actions/cache to v4
