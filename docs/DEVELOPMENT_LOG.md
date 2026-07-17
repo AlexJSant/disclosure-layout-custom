@@ -151,3 +151,8 @@
 - **Causa-raiz**: `stripMarkup` só fazia `.replace(/<[^>]*>/g, ' ')`. O `vtex.rich-text` guarda **Markdown cru** em `props.text` (e converte para HTML só na renderização). Se a pergunta usava `**negrito**` e a resposta era texto plano (ou HTML já “achatado” de outra forma), o JSON-LD vazava asteriscos só em `"name"`.
 - **Correção**: `stripMarkup` agora remove HTML **e** Markdown comum do rich-text: negrito (`**`/`__`), itálico (`*`/`_`), links (`[texto](url)` → texto), listas (`-`/`*`/`1.`), além de imagens, headings, code e strikethrough defensivamente.
 - **Teste**: `buildFAQItem` cobre negrito na pergunta + itálico, link e lista na resposta de uma vez (fecha o item 5 junto com o 3, sem depender só do caso de negrito).
+
+### TODOs pós-lançamento da major 1
+
+- [ ] **Corrigir a prop `animated`**: atualmente, as transições entre os estados aberto e fechado do disclosure/accordion são instantâneas. Quando habilitada, a prop não anima a transição e ainda compromete o funcionamento do app.
+- [ ] **Restringir `Generate Structured Data (FAQPage)` ao `disclosure-layout-group`**: remover a prop dos `disclosure-layout` individuais, pois gerar uma tag `<script>` por pergunta não faz sentido. Manter a geração de um único JSON-LD agregado apenas no group.
