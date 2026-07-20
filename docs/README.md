@@ -1,6 +1,6 @@
-📢 Use this project, [contribute](https://github.com/vtex-apps/disclosure-layout) to it or open issues to help evolve it using [Store Discussion](https://github.com/vtex-apps/store-discussion).
+📢 Use this project, [contribute](https://github.com/AlexJSant/disclosure-layout-custom) to it or open issues to help evolve it using [Store Discussion](https://github.com/vtex-apps/store-discussion).
 
-# Disclosure Layout
+# Disclosure Linked Data Layout
 
 <!-- DOCS-IGNORE:start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
@@ -10,19 +10,19 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- DOCS-IGNORE:end -->
 
-The Disclosure Layout app creates a layout structure based on disclosure indicators.
+The Disclosure Linked Data Layout app creates a disclosure (accordion) layout and can optionally emit [schema.org `FAQPage`](https://schema.org/FAQPage) JSON-LD for Google rich snippets.
 
 ![Disclosure Example](https://cdn.jsdelivr.net/gh/vtexdocs/dev-portal-content@main/images/vtex-disclosure-layout-0.gif) [Check this example](https://github.com/vtex-apps/store-theme/pull/226)
 
 ## Configuration
 
-### Step 1 - Adding the Disclosure Layout app to your theme dependencies
+### Step 1 - Adding the Disclosure Linked Data Layout app to your theme dependencies
 
-In the `manifest.json` file of your theme, add the Disclosure Layout app as a dependency:
+In the `manifest.json` file of your theme, add the app as a dependency:
 
 ```diff
   "dependencies": {
-+   "vtex.disclosure-ld-layout": "1.x"
++   "{appVendor}.disclosure-ld-layout": "1.x"
   }
 ```
 
@@ -37,7 +37,7 @@ Now, you can use all the blocks exported by the `disclosure-ld-layout` app. See 
 | `disclosure-ld-layout-group` | Wraps many `disclosure-ld-layouts` blocks at once. You can use this block to control when each should be displayed, allowing only one `disclosure-ld-layout` open at a time. |
 | `disclosure-ld-trigger-group` | Wraps many `disclosure-ld-trigger` blocks at once. You can use this block to control when and how the `disclosure-ld-layouts` blocks declared inside the `disclosure-ld-layout-group` should be displayed. |
 
-### Step 2 - Adding the Disclosure Layout blocks to your theme templates
+### Step 2 - Adding the Disclosure Linked Data Layout blocks to your theme templates
 
 Copy one of the examples below and paste it into your desired theme template, changing as necessary. If needed, add the `disclosure-ld-layout` block to the block list of the template.
 
@@ -136,7 +136,7 @@ Copy one of the examples below and paste it into your desired theme template, ch
 | - | - | - | - |
 | `initialVisibility` | `enum` | Defines the initial visibility of the layout content. Possible values are: `visible` (content initially open) or `hidden` (content is only displayed with user interaction). | `hidden` |
 | `animated` | `boolean` | Defines if the layout content should have animations. When set as `true`, this prop will enable additional `data-\*` attributes on the content, which you can use as selectors in CSS. It will also ensure that the element will be hidden once the transition has ended. | `false` |
-| `generateStructuredData` | `boolean` | When `true`, renders a [schema.org `FAQPage`](https://schema.org/FAQPage) `<script type="application/ld+json">` for this `disclosure-ld-layout`, using the text of its `disclosure-ld-trigger` (question) and `disclosure-ld-content` (answer). **Ignored when this `disclosure-ld-layout` is inside a `disclosure-ld-layout-group` that has `generateStructuredData` enabled** — in that case the group already generates a single aggregated script for all its `disclosure-ld-layout` children, so this prop only has an effect when the `disclosure-ld-layout` is used in isolation (outside of a group, or inside a group that doesn't have the feature enabled). See [Structured data (FAQPage)](#structured-data-faqpage) below. | `false` |
+| `generateStructuredData` | `boolean` | When `true`, renders a [schema.org `FAQPage`](https://schema.org/FAQPage) JSON-LD script for this layout (question from `disclosure-ld-trigger`, answer from `disclosure-ld-content`). **Ignored** when nested in a `disclosure-ld-layout-group` that already has this prop enabled. See [Structured data (FAQPage)](#structured-data-faqpage). | `false` |
 
 #### `disclosure-ld-trigger` props
 
@@ -167,7 +167,7 @@ Copy one of the examples below and paste it into your desired theme template, ch
 | Prop name | Type | Description | Default value |
 | - | - | - | - |
 | `maxVisible` | `enum` | Defines how many `disclosure-ld-layout` blocks should be displayed at a time. Possible values are: `one` (only one `disclosure-ld-layout` block should have its content displayed at time) or `many` (different `disclosure-ld-layout` block content can be displayed at time). | `one` |
-| `generateStructuredData` | `boolean` | When `true`, aggregates the question/answer of every `disclosure-ld-layout` descendant (even across intermediate blocks, such as a grid or `flex-layout`) into a **single** [schema.org `FAQPage`](https://schema.org/FAQPage) `<script type="application/ld+json">`, rendered once by the group. **This prevails over each individual `disclosure-ld-layout`'s own `generateStructuredData` prop**: once the group has this enabled, no descendant `disclosure-ld-layout` renders a script of its own, even if its individual prop is `true`. See [Structured data (FAQPage)](#structured-data-faqpage) below. | `false` |
+| `generateStructuredData` | `boolean` | When `true`, aggregates every descendant `disclosure-ld-layout` (including through wrappers such as `flex-layout`) into a **single** [schema.org `FAQPage`](https://schema.org/FAQPage) JSON-LD script. **Prevails over** each child's own `generateStructuredData` prop. See [Structured data (FAQPage)](#structured-data-faqpage). | `false` |
 
 #### `disclosure-ld-trigger-group` props
 
@@ -181,13 +181,9 @@ Copy one of the examples below and paste it into your desired theme template, ch
 
 ## Structured data (FAQPage)
 
-`disclosure-ld-layout` can optionally generate [schema.org `FAQPage`](https://schema.org/FAQPage) structured data (JSON-LD), commonly used to build FAQ sections (`disclosure-ld-trigger` as the question, `disclosure-ld-content` as the answer). This is disabled by default and is fully opt-in — enabling `generateStructuredData` is purely additive and does not change any existing visual behavior (toggle, animation, CSS handles, etc).
+`disclosure-ld-layout` can optionally generate [schema.org `FAQPage`](https://schema.org/FAQPage) JSON-LD (`disclosure-ld-trigger` = question, `disclosure-ld-content` = answer). The feature is opt-in (`generateStructuredData`, default `false`) and does not change visual behavior.
 
-The JSON-LD `<script>` is injected via [`Helmet`](https://github.com/nfl/react-helmet) (imported from `vtex.render-runtime`), the same mechanism used by the official [`structured-data`](https://github.com/vtex-apps/structured-data) app, and is resolved during server-side rendering, so it's already present in the HTML returned by the server (not only injected client-side after hydration).
-
-Text is extracted from the resolved props/content of the `rich-text` block declared inside `disclosure-ld-trigger`/`disclosure-ld-content` (the most common use case). If a different kind of block is used instead and no text can be determined, the corresponding item is silently omitted from the JSON-LD — this never throws an error nor affects the visual rendering of the component.
-
-> ℹ️ **Maintenance note:** FAQ extraction walks an internal render-runtime structure (`extensions[treePath].blocks` → `{ extensionPointId }`), the same ordered child list `ExtensionPoint` uses to render. Those ambient types live in the runtime source (`react/typings/global.d.ts`) and are **not** shipped in the published `@types` package, so this app keeps a local mirror. If structured data breaks after bumping `vtex.render-runtime`, check that tag's `global.d.ts` and `ExtensionPoint/index.tsx` (`getChildExtensions`) first.
+The `<script type="application/ld+json">` is injected via `Helmet` from `vtex.render-runtime` and is present in the SSR HTML. Text is taken from `rich-text` props/content inside trigger/content; if no text can be resolved, that item is omitted without affecting the UI. HTML and common Markdown markers are stripped from the extracted text.
 
 ### Isolated usage
 
@@ -321,7 +317,7 @@ Generated JSON-LD (a single script, rendered by `disclosure-ld-layout-group#grou
 }
 ```
 
-> ⚠️ **Precedence:** setting `generateStructuredData: true` on individual `disclosure-ld-layout#first`/`disclosure-ld-layout#second` blocks above would have **no additional effect**, since the group already assumes responsibility for the aggregated script once its own `generateStructuredData` is `true`. The individual prop is only relevant when a `disclosure-ld-layout` is isolated (not inside a group with the feature enabled).
+> ⚠️ **Precedence:** with `generateStructuredData: true` on the group, setting the same prop on individual `disclosure-ld-layout` children has **no additional effect**. The individual prop only matters when the layout is isolated (or inside a group that does not enable the feature).
 
 ## Customization
 
