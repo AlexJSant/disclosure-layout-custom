@@ -1,7 +1,7 @@
 {
   "vendor": "sunhouse",
   "name": "disclosure-ld-layout",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Disclosure Linked Data Layout",
   "description": "Extends the native disclosure-layout behavior to display FAQ accordions with native JSON-LD structured data support for Google rich snippets.",
   "builders": {
