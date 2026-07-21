@@ -1,6 +1,7 @@
 {
   "name": "disclosure-ld-layout",
-  "version": "1.0.4",
+  "private": true,
+  "license": "UNLICENSED",
   "scripts": {
     "test": "vtex-test-tools test"
   },
